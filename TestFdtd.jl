@@ -10,7 +10,7 @@ Nx, Ny, Nz = 10, 11, 12           # Size of grid
 #λ, a, b = sqrt(1/3), 0, 0        # SLF  scheme
 X = 4/(Nx)                        # Spatial step
 Fs = 343/(X*λ)                    # Sampling Frequency
-Nt = iround(7*Fs)                 # Time samples (2 secs) 
+Nt = iround(7*Fs)                 # Time samples (7 secs) 
 
 s = zeros(Nt)
 s[5] = 1       #impulse
@@ -43,7 +43,7 @@ for l = 0:4,m=0:4,i =0:4
 	fres[l+1,m+1,i+1] = 343/(2*π)*sqrt(  (l*π/Lx)^2+(m*π/Ly)^2+(i*π/Lz)^2 )
 end
 
-
+t = linspace(0,1/Fs*length(s),length(s))
 ff = linspace(0,Fs, Nt)
 figure()
 plot(ff,10*log10(abs(fft(p_tild))),  label = "cuboid")
@@ -51,3 +51,7 @@ plot(ff,10*log10(abs(fft(p_tild2))), label = "L-shaped")
 plot(fres[:],10.* ones(length(fres[:])), "r*",  label = "cuboid analytical resonances" )
 xlim([20,170])
 legend(loc = 3 )
+
+figure()
+plot(t, p_tild)
+plot(t, p_tild2)
