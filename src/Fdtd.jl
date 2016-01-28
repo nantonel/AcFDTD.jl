@@ -26,7 +26,7 @@ function Fdtd(Nx,Ny,Nz,Nt,A,Qp,Qm,s,pos,posm)
 
 	if(size(pos,1) ==  3)
 		Ks = size(pos,2)   #Ks number of sources
-		indpos = zeros(Ks)
+		indpos = zeros(Int32,Ks)
 		for k = 1:Ks
 		indpos[k] = sub2ind((Nx,Ny,Nz),pos[1,k],pos[2,k],pos[3,k])
                 end
@@ -34,7 +34,7 @@ function Fdtd(Nx,Ny,Nz,Nt,A,Qp,Qm,s,pos,posm)
 
 	if(size(posm,1) ==  3)
 		K = size(posm,2)   #K number of mics
-		indposm = zeros(K)
+		indposm = zeros(Int32,K)
 		for k = 1:K
 		indposm[k] = sub2ind((Nx,Ny,Nz),posm[1,k],posm[2,k],posm[3,k])
                 end

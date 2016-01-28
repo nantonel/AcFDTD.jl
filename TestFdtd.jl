@@ -10,7 +10,7 @@ Nx, Ny, Nz = 10, 11, 12           # Size of grid
 #λ, a, b = sqrt(1/3), 0, 0        # SLF  scheme
 X = 4/(Nx)                        # Spatial step
 Fs = 343/(X*λ)                    # Sampling Frequency
-Nt = iround(7*Fs)                 # Time samples (7 secs) 
+Nt = round(Int64,3*Fs)                 # Time samples (7 secs) 
 
 s = zeros(Nt)
 s[5] = 1       #impulse
@@ -18,7 +18,7 @@ fl,fh = 10,400
 myHP = digitalfilter(Bandpass(fl,fh,fs = Fs),Butterworth(15))
 s = filt(myHP,s) #bandpass impulse
 
-ξ = [1000, 1000, 1000, 1000, 1000, 1000] # faces main impedance
+ξ = [1000; 1000; 1000; 1000; 1000; 1000] # faces main impedance
 υ = 1./ξ                                 # convert to admittances
 
 pos = [2 2 2]'         # source position

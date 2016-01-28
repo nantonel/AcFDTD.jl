@@ -25,7 +25,7 @@ function CreateGeometryLshaped(Nx,Ny,Nz)
 	=#
 
 	G = ones(Int32,Nx,Ny,Nz)                 # creates the tensor with 1 where domain is present 
-	G[end-iround(Nx/2):end,end-iround(Ny/3):end,:] = 0     # this change geometry from pure cuboid 
+	G[end-round(Int32,Nx/2):end,end-round(Int32,Ny/3):end,:] = 0     # this change geometry from pure cuboid 
 
 	G2 = zeros(Int32,Nx+2,Ny+2,Nz+2)# puts a shell of zeros around the tensor
 	G2[2:Nx+1, 2:Ny+1, 2:Nz+1] = G
