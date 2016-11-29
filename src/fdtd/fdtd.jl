@@ -1,4 +1,4 @@
-export fdtd
+export fdtd,fdtdAdj
 
 """
 `finite difference time domain method for room acoustic simulations`
@@ -55,8 +55,8 @@ end
 
 function fdtd(s::Array{Float64}, xs::Array{Int64}, xr::Array{Int64}, Nt::Int64, geo::CuboidRoom, 
 	      Qm::Array{Float64,1}, A::SparseMatrixCSC{Float64,Int64}, Qp::Array{Float64,1}; 
-	      p1::Array{Float64,1} = zeros(Float64, geo.Nx*geo.Ny*geo.Nz ), #initial conditions
-	      p0::Array{Float64,1} = zeros(Float64, geo.Nx*geo.Ny*geo.Nz ) ) 
+	      pic1::Array{Float64,1} = zeros(Float64, geo.Nx*geo.Ny*geo.Nz ), #initial conditions
+	      pic0::Array{Float64,1} = zeros(Float64, geo.Nx*geo.Ny*geo.Nz ) ) 
 
 	if(size(xs,1)!=3) error("size(xs,1) must be equal to 3") end
 	if(size(xs,2)!= size(s,2)) error("size(xs,1) must be equal to size(s,2)") end
@@ -65,21 +65,20 @@ function fdtd(s::Array{Float64}, xs::Array{Int64}, xr::Array{Int64}, Nt::Int64, 
 
 	Nxyz = geo.Nx*geo.Ny*geo.Nz
 	#initialize arrays
+	p0 = copy(pic0)
+	p1 = copy(pic1)
 	p2 = zeros(Float64, Nxyz )
 
 	#initialize output
-	p_out = zeros(Float64,Nt+2,size(xr,2))
+	p_out = zeros(Float64,Nt,size(xr,2))
 		
 	indxr = sub2ind((geo.Nx,geo.Ny,geo.Nz),xr[1,:],xr[2,:],xr[3,:])
 	indxs = sub2ind((geo.Nx,geo.Ny,geo.Nz),xs[1,:],xs[2,:],xs[3,:])
 
-	p_out[1,:] = copy(p0[indxr]) 
-	p_out[2,:] = copy(p1[indxr]) 
-
-	for n = 3:Nt+2
+	for n = 1:Nt
 
 		p2 = A*p1 + Qm.*p0
-		p2[indxs] += s[n-2,:]
+		p2[indxs] += s[n,:]
 		p2 = p2./Qp
 
 		p_out[n,:] = copy(p2[indxr]) 
@@ -91,4 +90,10 @@ function fdtd(s::Array{Float64}, xs::Array{Int64}, xr::Array{Int64}, Nt::Int64, 
 
 	return p_out
 end
+
+function fdtdAdj(p::Array{Float64},xs::Array{Int64}, xr::Array{Int64}, args...)
+	s = fdtd(flipdim(p,1),xr,xs,args...)
+	return flipdim(s,1)
+end
+
 

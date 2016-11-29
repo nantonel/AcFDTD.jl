@@ -3,6 +3,7 @@ using Base.Test
 
 geo = CuboidRoom(7,8,10,10*ones(6), FDTDEnv(0.1,SLF()))
 
+srand(123)
 Nt = 500
 #@time L = get_L(geo)
 #@time Q = get_Q(geo)
@@ -32,7 +33,7 @@ p_t2 = fdtd(s_t,xs,xr,Nt,geo,Qm,A,Qp)
 @test norm(p_t2[:]-p_t)<=1e-11
 
 @time p2 = fdtd(s_t,xs,Nt,geo,Qm,A,Qp)
-@test norm(p2'[:]-p)<=1e-10
+@test norm(p2'[:]-p[2*geo.Nx*geo.Ny*geo.Nz+1:end])<=1e-10
 
 p0,p1 = randn(geo.Nx*geo.Ny*geo.Nz),randn(geo.Nx*geo.Ny*geo.Nz)
 s = zeros(s)
@@ -40,7 +41,7 @@ s[1:2*geo.Nx*geo.Ny*geo.Nz]=[p0;p1]
 p = B\s
 p_t = F*p
 
-p_t2 = fdtd(zeros(s_t),xs,xr,Nt,geo,Qm,A,Qp; p0 = p0,p1 = p1)
+p_t2 = fdtd(zeros(s_t),xs,xr,Nt,geo,Qm,A,Qp; pic0 = p0,pic1 = p1)
 @test norm(p_t2[:]-p_t)<=1e-11
 
 
@@ -56,7 +57,6 @@ filt!(s_t,digitalfilter(Bandpass(10,f2;fs = geo.env.Fs),Butterworth(15)),s_t)
 xr = [2 2 2]'
 xs = [geo.Nx-1 geo.Ny-1 geo.Nz-1]'
 p_t2 = fdtd(s_t,xs,xr,Nt,geo)
-p_t2 = p_t2[3:end]  #remove IC
 
 f = linspace(0,geo.env.Fs/2,round(Int64,Nt/2)+1)
 fres  = zeros(5,5,5)
@@ -88,7 +88,6 @@ xs = round(Int64,[geo.Nx/2 geo.Ny/2 geo.Nz/2]')
 xr = round(Int64,[geo.Nx/2 geo.Ny/2+4 geo.Nz/2]')
 
 p_t2 = fdtd(s_t,xs,xr,Nt,geo)
-p_t2 = p_t2[3:end]  #remove IC
 t = 1/geo.env.Fs:1/geo.env.Fs:Nt/geo.env.Fs
 
 d = norm(X*(xr-xs))

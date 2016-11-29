@@ -85,14 +85,15 @@ function get_Sel(g::CuboidRoom,Nt::Int64,xr::Array{Int64})
 
 	Nxyz = g.Nx*g.Ny*g.Nz
 	 
-	indposvec = zeros(Int64,Ks*(Nt+2))
+	indposvec = zeros(Int64,Ks*Nt)
 	for k =1:Ks
-		for i = 1:Nt+2  
-			indposvec[i+(k-1)*(Nt+2)] = indxr[k]
+		for i = 1:Nt  
+			indposvec[i+(k-1)*Nt] = indxr[k]
 			indxr[k] += Nxyz
 		end
 	end
-	F =  sparse((1:Ks*(Nt+2)),indposvec,ones(Int64,Ks*(Nt+2)),Ks*(Nt+2),Nxyz*(Nt+2))
+	indposvec = indposvec+2*Nxyz
+	F =  sparse((1:Ks*Nt),indposvec,ones(Int64,Ks*Nt),Ks*Nt,Nxyz*(Nt+2))
 	
 	return F
 
