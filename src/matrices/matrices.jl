@@ -73,15 +73,13 @@ end
 
 """
 ## Create selection matrix
-* usage: F = get_Sel(g::CuboidRoom,Nt::Int64,xr::Array{Int64})
+* usage: F = get_Sel(g::CuboidRoom,Nt::Int,xr::Vector{Tuple{Int,Int,Int}})
 """
-function get_Sel(g::CuboidRoom,Nt::Int64,xr::Array{Int64})
+function get_Sel(g::CuboidRoom,Nt::Int, xr::Vector{Tuple{Int,Int,Int}})
 
-	if(size(xr,1)!=3) error("size(xr,1) must be equal to 3") end
-
-	Ks = size(xr,2)   #Ks number of mics
+	Ks = length(xr)   #Ks number of mics
 		
-	indxr = sub2ind((g.Nx,g.Ny,g.Nz),xr[1,:],xr[2,:],xr[3,:])
+	indxr = [sub2ind((g.Nx,g.Ny,g.Nz),x...) for x in xr]
 
 	Nxyz = g.Nx*g.Ny*g.Nz
 	 
@@ -101,15 +99,14 @@ end
 
 """
 ## Create selection matrix
-* usage: E = get_Exp(g::CuboidRoom,Nt::Int64,pos::Array{Int64})
+* usage: E = get_Exp(g::CuboidRoom,Nt::Int64,pos::Vector{Tuple{Int,Int,Int}})
 """
-function get_Exp(g::CuboidRoom,Nt::Int64,pos::Array{Int64})
+function get_Exp(g::CuboidRoom,Nt::Int,pos::Vector{Tuple{Int,Int,Int}})
 
-	if(size(pos,1)!=3) error("size(pos,1) must be equal to 3") end
 		
-	Ks = size(pos,2)   #Ks number of sources
+	Ks = length(pos)   #Ks number of sources
 	
-	indposm = sub2ind((g.Nx,g.Ny,g.Nz),pos[1,:],pos[2,:],pos[3,:])
+	indposm = [sub2ind((g.Nx,g.Ny,g.Nz) ,x...) for x in pos]
 
 	Nxyz = g.Nx*g.Ny*g.Nz
 	 

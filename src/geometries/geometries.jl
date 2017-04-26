@@ -1,5 +1,7 @@
 abstract AbstractGeometry   
 
+
+include("getNodeProperty.jl")
 include("cuboidRoom.jl")
 include("LShapedRoom.jl")
 

@@ -22,14 +22,23 @@ immutable CuboidRoom <: AbstractGeometry
 	Nz::Int64   #z-axis samples
 
 	ξ::Array{Float64,1}   #Impedance
+	G::Array{UInt8,3}     #NodeProperty
 	env::FDTDEnv          #FDTD acoustic env.
+	function CuboidRoom(Lx,Ly,Lz,Nx,Ny,Nz,ξ,env)
+		if(any([Lx;Ly;Lz].< 0)) error("room dimensions L should be positive") end
+		if(length(ξ)!= 6) error("length(ξ) must be 6") end
+		g = ones(Bool,Nx+2,Ny+2,Nz+2) 
+		g[1,:,:] = g[end,:,:] = false
+		g[:,1,:] = g[:,end,:] = false
+		g[:,:,1] = g[:,:,end] = false
+		G = AcFDTD.getNodeProperty(g)
+		new(Lx,Ly,Lz,Nx,Ny,Nz,ξ,G,env)
+	end
+	
 end
 	
 function CuboidRoom(Lx::Float64,Ly::Float64,Lz::Float64,
 		    ξ::Array{Float64,1}, env::FDTDEnv)
-
-	if(any([Lx;Ly;Lz].< 0)) error("room dimensions L should be positive") end
-	if(length(ξ)!= 6) error("length(ξ) must be 6") end
 
 	Nx = round(Int64,Lx/env.X)
 	Ny = round(Int64,Ly/env.X)
@@ -40,10 +49,6 @@ end
 
 function CuboidRoom(Nx::Int64,Ny::Int64,Nz::Int64,
 		    ξ::Array{Float64,1}, env::FDTDEnv)
-
-	if(any([Nx;Ny;Nz].< 0)) error("room dimensions L should be positive") end
-	if(length(ξ)!= 6) error("length(ξ) must be 6") end
-
 	Lx = Nx*env.X
 	Ly = Ny*env.X
 	Lz = Nz*env.X
