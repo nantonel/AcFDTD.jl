@@ -52,7 +52,7 @@ Create a band-limited sound source
 with e.g. the `DSP` package:
 ```julia
 using DSP
-Nt = round(Int64,env.Fs)         # number of time steps (1 sec)
+Nt = round(Int,env.Fs)         # number of time steps (1 sec)
 s = zeros(Nt)                    # source signal
 s[3] = 1
 f2 = geo.env.Fs/2*0.175          # cut-off frequency of source
@@ -61,13 +61,13 @@ filt!(s,digitalfilter(Bandpass(10,f2;fs = geo.env.Fs),Butterworth(5)),s)
 Define the position of microphone 
 and sound sources:
 ```julia
-xr = [2 2 2; 2 geo.Ny-1 geo.Nz-1]' # mic positions
-xs = [geo.Nx-1 geo.Ny-1 geo.Nz-1]' # sound source position
-#must be Array{Int64} with size(xr,1) = 3
+xr = [(2, 2, 2), (2, geo.Ny-1, geo.Nz-1)] # mic positions
+xs = (geo.Nx-1, geo.Ny-1, geo.Nz-1) # sound source position
+#positions must be Tuple{Int,Int,Int} or Array{Tuple{Int,Int,Int},1} 
 ```
 Now type:
 ```julia
-p = fdtd(s,xs,xr,Nt,geo)
+p = fdtd(xr,xs,Nt,geo,s)
 ```
 to obtain the sound pressure of the microphones.
 

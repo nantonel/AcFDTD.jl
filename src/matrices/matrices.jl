@@ -1,7 +1,6 @@
 export get_L, 
        get_Q, 
        get_B,
-       get_QmAQp,
        get_Sel,
        get_Exp
 

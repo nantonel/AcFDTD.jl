@@ -1,9 +1,12 @@
 abstract AbstractGeometry   
 
+import Base: size
 
 include("getNodeProperty.jl")
 include("cuboidRoom.jl")
-include("LShapedRoom.jl")
+#include("LShapedRoom.jl")
+
+size(f::AbstractGeometry) = (f.Nx,f.Ny,f.Nz)
 
 function Base.show(io::IO, f::AbstractGeometry)
 
