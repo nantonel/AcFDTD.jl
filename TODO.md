@@ -1,6 +1,6 @@
 # To Do List:
 
-* make L-shaped room solver
+* make L-shaped room solver (namely create other files like `/src/fdtd/walls.jl` )
 * frequency dependent impedance
-* make adjoint operator
+* finish calls for adjoint operators
 * many other stuff.....
