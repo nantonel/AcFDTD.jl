@@ -3,13 +3,13 @@ using AcFDTD
 using Base.Test
 
 srand(123)
-geo = CuboidRoom(7,8,10,abs(10*randn(6)), FDTDEnv(0.1,SLF()))
+geo = CuboidRoom(7,8,10,abs(10*randn(6)), FDTDEnv(0.1,IWB()))
 f = FDTD(geo) 
 Nxyz = geo.Nx*geo.Ny*geo.Nz
 
 Nt = 40
-xs = [(6, 7, 9), (3, 3, 3)]
-xr = [(9, 2, 4), (8, 7, 8), (2, 5, 2)]
+xs = [(6, 7, 9), (3, 3, 3), (2, 5, 2)]
+xr = [(2, 2, 4), (2, 7, 8)]
 
 B = get_B(geo,Nt)
 
@@ -42,9 +42,9 @@ fdtd!(p3,xr,xs,Nt,f,s)
 println("testing in-place call")
 @time fdtdAdj!(s3,xr,xs,Nt,f,p)
 
-@test abs(vecdot(p[:],p1)-vecdot(s1,s[:]))<1e-12
-@test abs(vecdot(p,p2)-vecdot(s2,s))<1e-12
-@test abs(vecdot(p,p3)-vecdot(s3,s))<1e-12
+@test abs(vecdot(p[:],p1)-vecdot(s1,s[:]))<1e-10
+@test abs(vecdot(p,p2)-vecdot(s2,s))<1e-10
+@test abs(vecdot(p,p3)-vecdot(s3,s))<1e-10
 
 println("testing Adjoint full no IC")
 BE = (B\full(Exp))
@@ -65,9 +65,9 @@ fdtdAdj!(s3,xs,Nt,f,P)
 println("testing in-place call")
 @time fdtdAdj!(s3,xs,Nt,f,P)
 
-@test abs(vecdot(P[:],P1)-vecdot(s1,s[:]))<1e-12
-@test abs(vecdot(P,P2)-vecdot(s2,s))<1e-12
-@test abs(vecdot(P,P3)-vecdot(s3,s))<1e-12
+@test abs(vecdot(P[:],P1)-vecdot(s1,s[:]))<1e-10
+@test abs(vecdot(P,P2)-vecdot(s2,s))<1e-10
+@test abs(vecdot(P,P3)-vecdot(s3,s))<1e-10
 
 println("testing Adjoint full, source everywhere no IC")
 
@@ -86,7 +86,7 @@ println("testing in-place call")
 @time fdtdAdj!(S3,Nt,f,P)
 
 #@test abs(vecdot(P[:],P1)-vecdot(S1,S[:]))<1e-12
-@test abs(vecdot(P,P2)-vecdot(S2,S))<1e-12
-@test abs(vecdot(P,P3)-vecdot(S3,S))<1e-12
+@test abs(vecdot(P,P2)-vecdot(S2,S))<1e-10
+@test abs(vecdot(P,P3)-vecdot(S3,S))<1e-10
 
 ##TODO make adjoint with ICs
