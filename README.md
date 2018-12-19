@@ -1,4 +1,4 @@
-# AcFDTD
+# AcFDTD (this library is unmantained) 
 
 Finite Difference Time Domain (FDTD) method for room acoustic simulation
 
